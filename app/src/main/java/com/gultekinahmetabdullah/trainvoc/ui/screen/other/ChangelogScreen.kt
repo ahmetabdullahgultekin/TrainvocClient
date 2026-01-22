@@ -15,25 +15,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Upgrade
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,26 +63,69 @@ import com.gultekinahmetabdullah.trainvoc.model.UpdateType
 import com.gultekinahmetabdullah.trainvoc.ui.theme.Spacing
 
 /**
- * ChangelogScreen - Full version history display
+ * ChangelogScreen - Full version history display with search and filtering
  *
  * Features:
  * - Displays all app versions chronologically
  * - Expandable/collapsible version cards
- * - Shows version highlights and upcoming features
+ * - Search functionality to filter versions and updates
+ * - Filter by update type (NEW, IMPROVED, FIXED)
+ * - Deep linking with version parameter for auto-expand
  * - Material 3 design matching UpdateNotesCard
+ *
+ * @param navController Navigation controller
+ * @param targetVersionCode Optional version code to auto-expand (deep linking)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangelogScreen(navController: NavController) {
+fun ChangelogScreen(
+    navController: NavController,
+    targetVersionCode: Int? = null
+) {
     val context = LocalContext.current
     val updateNotesManager = remember { UpdateNotesManager.getInstance(context) }
 
-    // In a real app, this would load all versions from a JSON file or API
-    // For now, we'll display the current version
-    val allVersions = remember {
-        listOf(
-            updateNotesManager.getUpdateNotes() ?: getDefaultChangelogEntry()
-        )
+    // Load all versions
+    val allVersions = remember { updateNotesManager.getAllVersions() }
+
+    // Search and filter state
+    var searchQuery by remember { mutableStateOf("") }
+    var selectedFilter by remember { mutableStateOf<UpdateType?>(null) }
+
+    // Track expanded states for each version
+    val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
+
+    // Auto-expand target version if specified (deep linking)
+    LaunchedEffect(targetVersionCode) {
+        if (targetVersionCode != null) {
+            expandedStates[targetVersionCode] = true
+        }
+    }
+
+    // Filter versions based on search query and selected filter
+    val filteredVersions = remember(allVersions, searchQuery, selectedFilter) {
+        allVersions.filter { version ->
+            val matchesSearch = if (searchQuery.isBlank()) {
+                true
+            } else {
+                val query = searchQuery.lowercase()
+                version.currentVersion.lowercase().contains(query) ||
+                        version.releaseDate.lowercase().contains(query) ||
+                        version.highlights.any {
+                            it.title.lowercase().contains(query) ||
+                                    it.description.lowercase().contains(query)
+                        } ||
+                        version.upcomingFeatures.any { it.lowercase().contains(query) }
+            }
+
+            val matchesFilter = if (selectedFilter == null) {
+                true
+            } else {
+                version.highlights.any { it.type == selectedFilter }
+            }
+
+            matchesSearch && matchesFilter
+        }
     }
 
     Scaffold(
@@ -103,30 +158,184 @@ fun ChangelogScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(Spacing.small))
             }
 
+            // Header
             item {
-                Text(
-                    text = "Version History",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                Column {
+                    Text(
+                        text = "Version History",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.extraSmall))
+                    Text(
+                        text = "${allVersions.size} versions • ${allVersions.sumOf { it.highlights.size }} updates",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            // Search bar
+            item {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("Search versions or updates...") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search"
+                        )
+                    },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { searchQuery = "" }) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = "Clear search"
+                                )
+                            }
+                        }
+                    },
+                    singleLine = true
                 )
             }
 
+            // Filter chips
             item {
-                Text(
-                    text = "See what's new and improved in each version of Trainvoc",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.small)
+                ) {
+                    item {
+                        FilterChip(
+                            selected = selectedFilter == null,
+                            onClick = { selectedFilter = null },
+                            label = { Text("All") },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.FilterList,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            selected = selectedFilter == UpdateType.NEW,
+                            onClick = {
+                                selectedFilter = if (selectedFilter == UpdateType.NEW) null else UpdateType.NEW
+                            },
+                            label = { Text("New") },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.NewReleases,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            selected = selectedFilter == UpdateType.IMPROVED,
+                            onClick = {
+                                selectedFilter = if (selectedFilter == UpdateType.IMPROVED) null else UpdateType.IMPROVED
+                            },
+                            label = { Text("Improved") },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Upgrade,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            selected = selectedFilter == UpdateType.FIXED,
+                            onClick = {
+                                selectedFilter = if (selectedFilter == UpdateType.FIXED) null else UpdateType.FIXED
+                            },
+                            label = { Text("Fixed") },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.BugReport,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        )
+                    }
+                }
+            }
+
+            // Results count
+            if (searchQuery.isNotEmpty() || selectedFilter != null) {
+                item {
+                    Text(
+                        text = "${filteredVersions.size} version${if (filteredVersions.size != 1) "s" else ""} found",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            // Display filtered versions
+            items(items = filteredVersions, key = { it.versionCode }) { version ->
+                VersionCard(
+                    updateNotes = version,
+                    isInitiallyExpanded = expandedStates[version.versionCode] == true,
+                    onExpandChange = { isExpanded ->
+                        expandedStates[version.versionCode] = isExpanded
+                    },
+                    highlightFilter = selectedFilter
                 )
             }
 
-            item {
-                Spacer(modifier = Modifier.height(Spacing.small))
-            }
-
-            // Display all versions
-            items(items = allVersions, key = { it.versionCode }) { version ->
-                VersionCard(updateNotes = version)
+            // Empty state
+            if (filteredVersions.isEmpty()) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = Spacing.extraLarge),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            modifier = Modifier.size(64.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                        Spacer(modifier = Modifier.height(Spacing.medium))
+                        Text(
+                            text = "No versions found",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "Try adjusting your search or filters",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
+                }
             }
 
             item {
@@ -140,8 +349,20 @@ fun ChangelogScreen(navController: NavController) {
  * Individual version card with expandable content
  */
 @Composable
-private fun VersionCard(updateNotes: UpdateNotes) {
-    var isExpanded by remember { mutableStateOf(false) }
+private fun VersionCard(
+    updateNotes: UpdateNotes,
+    isInitiallyExpanded: Boolean = false,
+    onExpandChange: (Boolean) -> Unit = {},
+    highlightFilter: UpdateType? = null
+) {
+    var isExpanded by remember { mutableStateOf(isInitiallyExpanded) }
+
+    // Update expansion state when initial value changes (for deep linking)
+    LaunchedEffect(isInitiallyExpanded) {
+        if (isInitiallyExpanded && !isExpanded) {
+            isExpanded = true
+        }
+    }
 
     // Chevron rotation animation
     val rotationAngle by animateFloatAsState(
@@ -149,6 +370,13 @@ private fun VersionCard(updateNotes: UpdateNotes) {
         animationSpec = tween(durationMillis = 300),
         label = "chevronRotation"
     )
+
+    // Filter highlights if filter is active
+    val displayedHighlights = if (highlightFilter != null) {
+        updateNotes.highlights.filter { it.type == highlightFilter }
+    } else {
+        updateNotes.highlights
+    }
 
     Card(
         modifier = Modifier
@@ -158,7 +386,10 @@ private fun VersionCard(updateNotes: UpdateNotes) {
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        onClick = { isExpanded = !isExpanded }
+        onClick = {
+            isExpanded = !isExpanded
+            onExpandChange(isExpanded)
+        }
     ) {
         Column(modifier = Modifier.padding(Spacing.medium)) {
             // Header
@@ -179,9 +410,21 @@ private fun VersionCard(updateNotes: UpdateNotes) {
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
+                    if (highlightFilter != null && displayedHighlights.isNotEmpty()) {
+                        Text(
+                            text = "${displayedHighlights.size} ${highlightFilter.name.lowercase()} update${if (displayedHighlights.size != 1) "s" else ""}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
 
-                IconButton(onClick = { isExpanded = !isExpanded }) {
+                IconButton(
+                    onClick = {
+                        isExpanded = !isExpanded
+                        onExpandChange(isExpanded)
+                    }
+                ) {
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = if (isExpanded) "Collapse" else "Expand",
@@ -209,9 +452,19 @@ private fun VersionCard(updateNotes: UpdateNotes) {
                     )
                     Spacer(Modifier.height(8.dp))
 
-                    updateNotes.highlights.forEach { highlight ->
+                    displayedHighlights.forEach { highlight ->
                         VersionHighlightItem(highlight)
                         Spacer(Modifier.height(8.dp))
+                    }
+
+                    // Show all highlights count if filtered
+                    if (highlightFilter != null && displayedHighlights.size < updateNotes.highlights.size) {
+                        Text(
+                            text = "${updateNotes.highlights.size - displayedHighlights.size} more update${if (updateNotes.highlights.size - displayedHighlights.size != 1) "s" else ""} not shown",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
                     }
 
                     // Upcoming features if any
@@ -307,55 +560,4 @@ private fun VersionHighlightItem(highlight: UpdateHighlight) {
             )
         }
     }
-}
-
-/**
- * Default changelog entry when JSON is not available
- */
-private fun getDefaultChangelogEntry(): UpdateNotes {
-    return UpdateNotes(
-        currentVersion = "1.0.0",
-        versionCode = 1,
-        releaseDate = "January 22, 2026",
-        highlights = listOf(
-            UpdateHighlight(
-                type = UpdateType.NEW,
-                title = "Modern Material 3 Design",
-                description = "Complete UI overhaul with beautiful Material 3 components, cards, and smooth animations throughout the app"
-            ),
-            UpdateHighlight(
-                type = UpdateType.IMPROVED,
-                title = "Enhanced Settings Screen",
-                description = "Redesigned with organized sections, icons, and better visual hierarchy for easier navigation"
-            ),
-            UpdateHighlight(
-                type = UpdateType.IMPROVED,
-                title = "Better Help & Support",
-                description = "Interactive FAQ with expandable cards, circular icons, and improved contact options"
-            ),
-            UpdateHighlight(
-                type = UpdateType.IMPROVED,
-                title = "Beautiful About Screen",
-                description = "Professional presentation with cards, proper theming, and enhanced social links"
-            ),
-            UpdateHighlight(
-                type = UpdateType.IMPROVED,
-                title = "100% WCAG 2.1 AA Compliance",
-                description = "Full accessibility support with proper contrast ratios and screen reader compatibility"
-            ),
-            UpdateHighlight(
-                type = UpdateType.FIXED,
-                title = "Dark Mode Polish",
-                description = "Fixed hardcoded colors for perfect dark mode support across all themes"
-            )
-        ),
-        upcomingFeatures = listOf(
-            "Backend sync across devices",
-            "Cloud backup with Google Drive",
-            "Text-to-Speech integration",
-            "11 memory games restoration",
-            "Dictionary API integration",
-            "Social sharing features"
-        )
-    )
 }

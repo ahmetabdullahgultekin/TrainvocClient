@@ -130,7 +130,7 @@ fun MainScreen(
                         onNavigateToDictionary = { navController.navigate(Route.DICTIONARY) },
                         onNavigateToGames = { navController.navigate(Route.GAMES_MENU) },
                         // Phase 5 - Update Notes & Changelog
-                        onNavigateToChangelog = { navController.navigate(Route.CHANGELOG) },
+                        onNavigateToChangelog = { navController.navigate(Route.changelog()) },
                     )
                 }
                 composable(Route.STORY) {
@@ -198,9 +198,19 @@ fun MainScreen(
                         onBackClick = { navController.popBackStack() }
                     )
                 }
-                composable(Route.CHANGELOG) {
+                composable(
+                    route = Route.CHANGELOG,
+                    arguments = listOf(
+                        navArgument("versionCode") {
+                            type = NavType.IntType
+                            defaultValue = -1
+                        }
+                    )
+                ) { backStackEntry ->
+                    val versionCode = backStackEntry.arguments?.getInt("versionCode")
                     com.gultekinahmetabdullah.trainvoc.ui.screen.other.ChangelogScreen(
-                        navController = navController
+                        navController = navController,
+                        targetVersionCode = if (versionCode != null && versionCode != -1) versionCode else null
                     )
                 }
                 composable(Route.HELP) {

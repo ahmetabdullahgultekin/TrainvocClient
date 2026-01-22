@@ -42,7 +42,10 @@ object Route {
     const val ACCESSIBILITY_SETTINGS = "accessibility_settings"
 
     // Phase 5 - Update Notes & Changelog
-    const val CHANGELOG = "changelog"
+    const val CHANGELOG = "changelog?versionCode={versionCode}"
 
     fun wordDetail(wordId: String) = "word_detail/$wordId"
+
+    fun changelog(versionCode: Int? = null) =
+        if (versionCode != null) "changelog?versionCode=$versionCode" else "changelog"
 }

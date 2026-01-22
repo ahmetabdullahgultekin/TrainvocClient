@@ -25,6 +25,7 @@ class UpdateNotesManager(private val context: Context) {
         private const val KEY_LAST_SEEN_VERSION = "last_seen_version"
         private const val KEY_DISMISSED_PREFIX = "dismissed_"
         private const val UPDATES_JSON_FILENAME = "updates.json"
+        private const val ALL_VERSIONS_JSON_FILENAME = "all_versions.json"
 
         @Volatile
         private var instance: UpdateNotesManager? = null
@@ -52,6 +53,25 @@ class UpdateNotesManager(private val context: Context) {
         } catch (e: Exception) {
             e.printStackTrace()
             null
+        }
+    }
+
+    /**
+     * Get all versions from all_versions.json file
+     * Returns list of all versions sorted by version code (newest first)
+     */
+    fun getAllVersions(): List<UpdateNotes> {
+        return try {
+            val json = loadJsonFromAssets(ALL_VERSIONS_JSON_FILENAME)
+            val allVersionsData = gson.fromJson(json, AllVersionsData::class.java)
+            allVersionsData.versions.map { it.toUpdateNotes() }
+                .sortedByDescending { it.versionCode }
+        } catch (e: IOException) {
+            // If JSON file doesn't exist, return single current version
+            listOfNotNull(getUpdateNotes())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            listOfNotNull(getUpdateNotes())
         }
     }
 
@@ -171,4 +191,11 @@ class UpdateNotesManager(private val context: Context) {
             )
         }
     }
+
+    /**
+     * Data class for all versions JSON deserialization
+     */
+    private data class AllVersionsData(
+        val versions: List<UpdateNotesData>
+    )
 }

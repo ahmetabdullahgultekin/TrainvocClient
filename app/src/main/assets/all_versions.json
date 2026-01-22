@@ -1,0 +1,357 @@
+{
+  "versions": [
+    {
+      "currentVersion": "1.0.0",
+      "versionCode": 1,
+      "releaseDate": "January 22, 2026",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Modern Material 3 Design",
+          "description": "Complete UI overhaul with beautiful Material 3 components, cards, and smooth animations throughout the app"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Enhanced Settings Screen",
+          "description": "Redesigned with organized sections, icons, and better visual hierarchy for easier navigation"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Better Help & Support",
+          "description": "Interactive FAQ with expandable cards, circular icons, and improved contact options"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Beautiful About Screen",
+          "description": "Professional presentation with cards, proper theming, and enhanced social links"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "100% WCAG 2.1 AA Compliance",
+          "description": "Full accessibility support with proper contrast ratios and screen reader compatibility"
+        },
+        {
+          "type": "FIXED",
+          "title": "Dark Mode Polish",
+          "description": "Fixed hardcoded colors for perfect dark mode support across all themes"
+        }
+      ],
+      "upcomingFeatures": [
+        "Backend sync across devices",
+        "Cloud backup with Google Drive",
+        "Text-to-Speech integration",
+        "11 memory games restoration",
+        "Dictionary API integration",
+        "Social sharing features"
+      ]
+    },
+    {
+      "currentVersion": "0.9.0",
+      "versionCode": 9,
+      "releaseDate": "January 15, 2026",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Gamification System",
+          "description": "Added achievements, daily streaks, XP system, and level progression to make learning more engaging"
+        },
+        {
+          "type": "NEW",
+          "title": "Daily Goals",
+          "description": "Track your daily learning goals with customizable word and quiz targets"
+        },
+        {
+          "type": "NEW",
+          "title": "Leaderboard",
+          "description": "Compete with other learners and see your ranking on the global leaderboard"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Home Screen Redesign",
+          "description": "New dashboard layout with profile summary, quick actions, and statistics preview"
+        },
+        {
+          "type": "FIXED",
+          "title": "Quiz Scoring Bug",
+          "description": "Fixed issue where quiz scores were not correctly calculated for multi-word answers"
+        }
+      ],
+      "upcomingFeatures": [
+        "Material 3 UI update",
+        "Accessibility improvements",
+        "Dark mode enhancements"
+      ]
+    },
+    {
+      "currentVersion": "0.8.0",
+      "versionCode": 8,
+      "releaseDate": "January 5, 2026",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Memory Games",
+          "description": "11 interactive memory games including Matching, Flashcards, Word Search, and more"
+        },
+        {
+          "type": "NEW",
+          "title": "Word of the Day",
+          "description": "Learn a new word every day with detailed explanations and example sentences"
+        },
+        {
+          "type": "NEW",
+          "title": "Favorites System",
+          "description": "Bookmark your favorite words for quick access and focused practice"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Quiz Engine",
+          "description": "Enhanced quiz algorithm with better question distribution and difficulty adaptation"
+        },
+        {
+          "type": "FIXED",
+          "title": "Notification Timing",
+          "description": "Fixed daily reminder notifications appearing at incorrect times"
+        }
+      ],
+      "upcomingFeatures": [
+        "Gamification features",
+        "Social leaderboard",
+        "Achievement badges"
+      ]
+    },
+    {
+      "currentVersion": "0.7.0",
+      "versionCode": 7,
+      "releaseDate": "December 20, 2025",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Cloud Backup",
+          "description": "Backup and restore your vocabulary across devices with Google Drive integration"
+        },
+        {
+          "type": "NEW",
+          "title": "Advanced Statistics",
+          "description": "Detailed learning analytics with charts, graphs, and progress tracking"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Dictionary Search",
+          "description": "Enhanced search with filters, sorting options, and category browsing"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Performance Optimization",
+          "description": "App now loads 40% faster with improved memory management"
+        },
+        {
+          "type": "FIXED",
+          "title": "Word Entry Validation",
+          "description": "Fixed issue where special characters in word entries caused crashes"
+        }
+      ],
+      "upcomingFeatures": [
+        "Memory games",
+        "Word of the day feature",
+        "Favorites bookmarking"
+      ]
+    },
+    {
+      "currentVersion": "0.6.0",
+      "versionCode": 6,
+      "releaseDate": "December 10, 2025",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Multiple Quiz Types",
+          "description": "Added 8 different quiz formats: Multiple Choice, True/False, Fill in the Blank, and more"
+        },
+        {
+          "type": "NEW",
+          "title": "Smart Notifications",
+          "description": "Customizable daily reminders with quiet hours and streak alerts"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Word Management",
+          "description": "Easier word editing with batch operations and improved categorization"
+        },
+        {
+          "type": "FIXED",
+          "title": "Theme Persistence",
+          "description": "Fixed bug where theme selection was not saved between app restarts"
+        }
+      ],
+      "upcomingFeatures": [
+        "Cloud backup system",
+        "Advanced statistics",
+        "Dictionary enhancements"
+      ]
+    },
+    {
+      "currentVersion": "0.5.0",
+      "versionCode": 5,
+      "releaseDate": "November 28, 2025",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Dark Mode",
+          "description": "Full dark theme support with AMOLED mode option for battery savings"
+        },
+        {
+          "type": "NEW",
+          "title": "Color Palettes",
+          "description": "Choose from 8 beautiful color palettes to personalize your learning experience"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Quiz Interface",
+          "description": "Redesigned quiz screen with progress indicators and better feedback"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Settings Organization",
+          "description": "Reorganized settings into logical categories for easier navigation"
+        },
+        {
+          "type": "FIXED",
+          "title": "Data Export",
+          "description": "Fixed issue where CSV export included malformed UTF-8 characters"
+        }
+      ],
+      "upcomingFeatures": [
+        "Multiple quiz types",
+        "Smart notifications",
+        "Word management improvements"
+      ]
+    },
+    {
+      "currentVersion": "0.4.0",
+      "versionCode": 4,
+      "releaseDate": "November 15, 2025",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Story Mode",
+          "description": "Learn vocabulary through engaging stories with context-based learning"
+        },
+        {
+          "type": "NEW",
+          "title": "Offline Support",
+          "description": "Full app functionality without internet connection - learn anywhere, anytime"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Dictionary Performance",
+          "description": "Dictionary now loads 3x faster with improved database indexing"
+        },
+        {
+          "type": "FIXED",
+          "title": "Audio Playback",
+          "description": "Fixed pronunciation audio not playing on some Android devices"
+        }
+      ],
+      "upcomingFeatures": [
+        "Dark mode support",
+        "Color palette customization",
+        "Quiz interface redesign"
+      ]
+    },
+    {
+      "currentVersion": "0.3.0",
+      "versionCode": 3,
+      "releaseDate": "November 1, 2025",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Text-to-Speech",
+          "description": "Hear pronunciations with built-in text-to-speech support for multiple languages"
+        },
+        {
+          "type": "NEW",
+          "title": "Import/Export",
+          "description": "Import word lists from CSV or export your vocabulary for backup"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "Word Addition Flow",
+          "description": "Streamlined process for adding new words with auto-suggestions"
+        },
+        {
+          "type": "FIXED",
+          "title": "Keyboard Navigation",
+          "description": "Fixed keyboard not appearing when editing word definitions"
+        }
+      ],
+      "upcomingFeatures": [
+        "Story mode learning",
+        "Offline support",
+        "Performance improvements"
+      ]
+    },
+    {
+      "currentVersion": "0.2.0",
+      "versionCode": 2,
+      "releaseDate": "October 18, 2025",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Quiz System",
+          "description": "Test your knowledge with adaptive quizzes that adjust to your skill level"
+        },
+        {
+          "type": "NEW",
+          "title": "Progress Tracking",
+          "description": "Monitor your learning progress with detailed statistics and charts"
+        },
+        {
+          "type": "IMPROVED",
+          "title": "User Interface",
+          "description": "Major UI improvements with Material Design components"
+        },
+        {
+          "type": "FIXED",
+          "title": "Database Migration",
+          "description": "Fixed data loss issue during app updates"
+        }
+      ],
+      "upcomingFeatures": [
+        "Text-to-speech support",
+        "Import/export functionality",
+        "Word addition improvements"
+      ]
+    },
+    {
+      "currentVersion": "0.1.0",
+      "versionCode": 1,
+      "releaseDate": "October 1, 2025",
+      "highlights": [
+        {
+          "type": "NEW",
+          "title": "Initial Release",
+          "description": "First version of Trainvoc with core vocabulary management features"
+        },
+        {
+          "type": "NEW",
+          "title": "Dictionary",
+          "description": "Browse and search your personal vocabulary dictionary"
+        },
+        {
+          "type": "NEW",
+          "title": "Word Management",
+          "description": "Add, edit, and delete words with meanings and example sentences"
+        },
+        {
+          "type": "NEW",
+          "title": "Categories",
+          "description": "Organize words into custom categories for better organization"
+        }
+      ],
+      "upcomingFeatures": [
+        "Quiz system",
+        "Progress tracking",
+        "UI improvements"
+      ]
+    }
+  ]
+}
