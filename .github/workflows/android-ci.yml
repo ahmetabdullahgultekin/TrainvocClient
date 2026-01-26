@@ -80,7 +80,7 @@ jobs:
 
     - name: Comment build errors on PR
       if: failure() && github.event_name == 'pull_request'
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const fs = require('fs');
@@ -142,7 +142,7 @@ jobs:
 
     - name: Comment lint errors on PR
       if: steps.lint_check.outcome == 'failure' && github.event_name == 'pull_request'
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const fs = require('fs');
