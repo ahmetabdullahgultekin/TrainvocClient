@@ -226,7 +226,7 @@ dependencies {
     testImplementation("io.mockk:mockk-android:1.13.8")
 
     // Turbine for Flow testing
-    testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation("app.cash.turbine:turbine:1.2.1")
 
     // Truth for better assertions
     testImplementation("com.google.truth:truth:1.1.5")
